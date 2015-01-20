@@ -1,0 +1,20 @@
+{{ range $server := lsdir "/nginx-lb/server" }}
+
+upstream {{ $server }}_pool {
+{{ $upstream := printf "/nginx-lb/server/%s/upstream/*" $server }}{{ range gets $upstream }}
+    server {{ .Value }};
+{{ end }}
+}
+
+server {
+    server_name {{ $server_name := printf "/nginx-lb/server/%s/server_name" $server }}{{ getv $server_name }};
+    location / {
+        proxy_pass        http://{{ $server }}_pool;
+        proxy_redirect    off;
+        proxy_set_header  Host             $host;
+        proxy_set_header  X-Real-IP        $remote_addr;
+        proxy_set_header  X-Forwarded-For  $proxy_add_x_forwarded_for;
+   }
+}
+
+{{ end }}

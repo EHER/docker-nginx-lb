@@ -1,0 +1,10 @@
+[template]
+src = "nginx.conf.tmpl"
+dest = "/etc/nginx/conf.d/nginx-lb.conf"
+owner = "root"
+mode = "0644"
+keys = [
+  "/nginx-lb",
+]
+check_cmd = "/usr/sbin/nginx -t"
+reload_cmd = "/usr/sbin/nginx -s reload"
